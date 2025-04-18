@@ -47,6 +47,9 @@ def extract_from_xml(xml_path):
         placa = placa_match.group(1) if placa_match else None
         km = int(km_match.group(1)) if km_match else None
 
+
+        # O codigo esta errado - precisa ser corrigido
+        # O programa esta adicionando cada produto em um for loop dentro de cada NFe com o valor total da nota
         # Loop through products
         for prod in nfe.findall(".//nfe:det/nfe:prod", ns):
             xProd_elem = prod.find("nfe:xProd", ns)

@@ -28,17 +28,17 @@ def extract_from_cfe(xml_file):
             logging.warning(f"infCFe not found in {xml_file}")
             return df
 
-        ide = infCFe.find("ide")
-        numero = ide.findtext("nCFe")
+        ide_elem = infCFe.find("ide")
+        numero = ide_elem.findtext("nCFe")
         
-        total = infCFe.find("total")
-        valor_total = float(total.findtext("vCFe")) if total is not None else None
+        total_elem = infCFe.find("total")
+        valor_total = float(total_elem.findtext("vCFe")) if total_elem is not None else None
 
         # Optional additional info
-        infAdic = infCFe.find("infAdic")
-        infCpl_text = infAdic.findtext("infCpl") if infAdic is not None else ""
+        infAdic_elem = infCFe.find("infAdic")
+        infCpl_text = infAdic_elem.findtext("infCpl") if infAdic_elem is not None else ""
 
-        placa_match = re.search(r"placa\s*([A-Z]{3}\d{4})", infCpl_text, re.IGNORECASE)
+        placa_match = re.search(r"PLACA\s*([A-Z]{3}\d{4})", infCpl_text, re.IGNORECASE)
         km_match = re.search(r"KM\s*(\d+)", infCpl_text, re.IGNORECASE)
 
         placa = placa_match.group(1) if placa_match else None
@@ -79,12 +79,11 @@ def load_data(target_file, df):
 def main():
     setup_logging()
     logging.info("Iniciando extração de dados CFe...")
-    df = extract_all_cfe(xml_path)
+    df = extract_from_cfe(xml_path)
     logging.info("Extração concluída.")
     logging.info("Salvando dados em CSV...")
     load_data(target_file, df)
     logging.info("Finalizado com sucesso.")
-
 
 if __name__ == "__main__":
     main()
