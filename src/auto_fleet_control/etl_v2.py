@@ -41,7 +41,7 @@ def extract_from_xml(xml_path):
         infCpl_text = infCpl_elem.text if infCpl_elem is not None else ""
 
         # Extract "placa" and "KM" using regex
-        placa_match = re.search(r"placa\s+([A-Z]{3}\d{4})", infCpl_text)
+        placa_match = re.search(r"placa\s+([A-Za-z0-9]{7})", infCpl_text)
         km_match = re.search(r"KM\s+(\d+)", infCpl_text)
 
         placa = placa_match.group(1) if placa_match else None

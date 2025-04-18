@@ -23,6 +23,7 @@ def extract_from_google_sheets(sheet_url):
 
     # The part of the URL that contains the sheet ID
     sheet_id = sheet_url.split("/d/")[1].split("/edit")[0]
+    
     # Construct the CSV export URL
     csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid=903440851"
 
