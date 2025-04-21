@@ -80,8 +80,9 @@ def main():
     setup_logging()
     logging.info("Iniciando extração de dados CFe...")
     df = extract_from_cfe(xml_path)
+    df = extract_all_cfe(xml_path)
     logging.info("Extração concluída.")
-    logging.info("Salvando dados em CSV...")
+    # logging.info("Salvando dados em CSV...")
     load_data(target_file, df)
     logging.info("Finalizado com sucesso.")
 
