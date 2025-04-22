@@ -60,10 +60,10 @@ def extract_from_nfe(xml_path: str) -> pd.DataFrame:
             valor = (float(vProd) - float(discount)) * float(qtde)
             
             rows.append({
-                "num NF": nNF,
-                "valor": valor,
-                "descricao produto/servico": xProd,
-                "placa": placa,
+                "Numero": nNF,
+                "Valor": valor,
+                "Descricao": xProd,
+                "Placa": placa,
                 "KM": km
             })
 
