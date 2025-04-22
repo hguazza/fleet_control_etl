@@ -6,7 +6,7 @@ import re
 # from typing import Optional
 
 log_file = "log_file.txt"
-target_file = "test_transformed_data.csv"
+target_file = "transformed_data.csv"
 xml_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/notas_xml")
 
 def setup_logging():
@@ -35,27 +35,37 @@ def extract_from_nfe(xml_path: str) -> pd.DataFrame:
     infCpl_elem = infNFe.find(".//nfe:infAdic/nfe:infCpl", ns)
     infCpl_text = infCpl_elem.text if infCpl_elem is not None else ""
 
-    placa_match = re.search(r"PLACA:\s*([A-Z0-9]{7})", infCpl_text, re.IGNORECASE)
-    km_match = re.search(r"KM:\s*(\d+)", infCpl_text, re.IGNORECASE)
+    placa_match = re.search(r"PLACA\s*([A-Z0-9]{7})", infCpl_text, re.IGNORECASE)
+    km_match = re.search(r"KM\s*(\d+)", infCpl_text, re.IGNORECASE)
 
     placa = placa_match.group(1).upper() if placa_match else None
     km = int(km_match.group(1)) if km_match else None
 
     rows = []
 
-    for det in infNFe.findall("nfe:det", ns):
-        prod = det.find("nfe:prod", ns)
+    for prod in infNFe.findall(".//nfe:det/nfe:prod", ns):
         if prod is not None:
-            xProd = prod.findtext("nfe:xProd", default=None, namespaces=ns)
-            vProd_text = prod.findtext("nfe:vProd", default=None, namespaces=ns)
-            try:
-                vProd = float(vProd_text) if vProd_text else None
-            except ValueError:
-                vProd = None
+            xProd_elem = prod.find("nfe:xProd", ns)
+            xProd = xProd_elem.text if xProd_elem is not None else None
+
+            vProd_elem = prod.find("nfe:vProd", ns)
+            vProd = vProd_elem.text if vProd_elem is not None else None
+
+            qtde_elem = prod.find("nfe:qCom", ns)
+            qtde = qtde_elem.text if qtde_elem is not None else None
+
+            discount_elem = prod.find("nfe:vDesc", ns)
+            discount = discount_elem.text if discount_elem is not None else None
+            
+            valor = (float(vProd) - float(discount)) * float(qtde)
+            # try:
+            #     vProd = float(vProd_text) if vProd_text else None
+            # except ValueError:
+            #     vProd = None
 
             rows.append({
                 "num NF": nNF,
-                "valor NF": vProd,
+                "valor": valor,
                 "descricao produto/servico": xProd,
                 "placa": placa,
                 "KM": km
@@ -83,7 +93,7 @@ def load_data(target_file, df):
 
 def main():
     setup_logging()
-    logging.info("Iniciando extração de dados CFe...")
+    logging.info("Iniciando extração de dados NFe...")
     df = extract_all_nfe(xml_folder)
     logging.info(f"Extração concluída. Total de registros: {len(df)}")
     logging.info("Salvando dados em CSV...")

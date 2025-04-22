@@ -35,6 +35,14 @@ def extract_from_google_sheets(sheet_url):
         print("Please ensure the Google Sheet is publicly accessible.")
     return df
 
+# Extract from CFe
+
+
+# Extract from NFe
+
+
+# Extract
+
 
 def extract_from_xml(xml_file):
     dataframe = pd.DataFrame(columns=["num NF", "valor NF", "descricao produto/servico"])
