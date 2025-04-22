@@ -56,19 +56,22 @@ def extract_from_cfe(xml_path: str) -> pd.DataFrame:
 
     return pd.DataFrame(rows)
 
-def extract_all_cfe(xml_folder: Path):
-    all_data = pd.DataFrame()
+def extract_all_cfe(xml_folder: Path) -> pd.DataFrame:
+    data_frames = []
     xml_files = list(xml_folder.glob("*.xml"))
 
     if not xml_files:
-        logging.warning("Nenhum arquivo XML encontrado.")
-        return all_data
+        logging.warning("No XML files found.")
+        return pd.DataFrame()
 
     for file_path in xml_files:
-        data = extract_from_cfe(file_path)
-        all_data = pd.concat([all_data, data], ignore_index=True)
+        try:
+            data = extract_from_cfe(file_path)
+            data_frames.append(data)
+        except Exception as e:
+            logging.error(f"Failed to process {file_path}: {e}")
 
-    return all_data
+    return pd.concat(data_frames, ignore_index=True) if data_frames else pd.DataFrame()
 
 def load_data(target_file, df):
     df.to_csv(target_file, index=False)
