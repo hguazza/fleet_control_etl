@@ -3,11 +3,18 @@ from pathlib import Path
 import pandas as pd
 import xml.etree.ElementTree as ET
 import re
+from datetime import datetime
 # from typing import Optional
 
+
+now = datetime.now()
+today = now.strftime("%d/%m/%Y")
+
 log_file = "log_file.txt"
-target_file = "transformed_cfe_data.csv"
-xml_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/cupons_xml")
+target_file = "cfe.csv"
+# mudar folder de mac para windows
+# xml_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/notas_xml")
+xml_folder = Path("/Users/henriqueguazzelli/Dev/Python/auto_fleet_control/cupons_xml")
 
 def setup_logging():
     logging.basicConfig(
@@ -24,6 +31,9 @@ def extract_from_cfe(xml_path: str) -> pd.DataFrame:
 
     nCFe_elem = root.find(".//infCFe/ide/nCFe")
     nCFe = nCFe_elem.text if nCFe_elem is not None else None
+
+    fornecedor_elem = root.find(".//infCFe/emit/xNome")
+    fornecedor = fornecedor_elem.text if fornecedor_elem is not None else None
 
     infCpl_elem = root.find(".//infAdic/infCpl")
     infCpl_text = infCpl_elem.text if infCpl_elem is not None else ""
@@ -47,11 +57,16 @@ def extract_from_cfe(xml_path: str) -> pd.DataFrame:
                 vProd = None
 
             rows.append({
+                "Data": today,
                 "Numero": nCFe,
                 "Valor": vProd,
                 "Descricao": xProd,
                 "Placa": placa,
-                "KM": km
+                "KM": km,
+                "Fornecedor": fornecedor,
+                "Motorista": "",
+                "Histórico": "",
+                "Categoria": ""
             })
 
     return pd.DataFrame(rows)

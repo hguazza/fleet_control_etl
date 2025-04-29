@@ -3,11 +3,14 @@ from pathlib import Path
 import pandas as pd
 import xml.etree.ElementTree as ET
 import re
+from datetime import datetime
 # from typing import Optional
 
 log_file = "log_file.txt"
-target_file = "transformed_data.csv"
-xml_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/notas_xml")
+target_file = "nfe.csv"
+# mudar path de mac para windows
+# xml_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/notas_xml")
+xml_folder = Path("/Users/henriqueguazzelli/Dev/Python/auto_fleet_control/notas_xml")
 
 def setup_logging():
     logging.basicConfig(
@@ -31,6 +34,15 @@ def extract_from_nfe(xml_path: str) -> pd.DataFrame:
 
     nNF_elem = infNFe.find(".//nfe:ide/nfe:nNF", ns)
     nNF = nNF_elem.text if nNF_elem is not None else None
+
+    data_elem = infNFe.find(".//nfe:ide/nfe:dhEmi", ns)
+    # data = data_elem.text[:10].replace("-", "/") if data_elem is not None else None
+    data_text = data_elem.text[:10]
+    date = datetime.strptime(data_text, "%Y-%m-%d")
+    date = date.strftime("%d/%m/%Y")
+
+    fornecedor_elem = infNFe.find(".//nfe:emit/nfe:xNome", ns)
+    fornecedor = fornecedor_elem.text if fornecedor_elem is not None else None
 
     infCpl_elem = infNFe.find(".//nfe:infAdic/nfe:infCpl", ns)
     infCpl_text = infCpl_elem.text if infCpl_elem is not None else ""
@@ -60,11 +72,16 @@ def extract_from_nfe(xml_path: str) -> pd.DataFrame:
             valor = (float(vProd) - float(discount)) * float(qtde)
             
             rows.append({
+                "Data": date,
                 "Numero": nNF,
                 "Valor": valor,
                 "Descricao": xProd,
                 "Placa": placa,
-                "KM": km
+                "KM": km,
+                "Fornecedor": fornecedor,
+                "Motorista": "",
+                "Histórico": "",
+                "Categoria": ""
             })
 
     return pd.DataFrame(rows)

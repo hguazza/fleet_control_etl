@@ -7,12 +7,16 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
+from typing import Dict
 
 log_file = "log_file.txt"
 target_file = "final.csv"
 sheet_url = "https://docs.google.com/spreadsheets/d/1HtXXEe58zNsG4I3k7qZLBrHJUlmruJEj9jYNffV6w0c/edit?gid=0#gid=0"
-cfe_fodler = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/cupons_xml")
-nfe_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/notas_xml")
+
+# cfe_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/cupons_xml")
+cfe_folder = Path("/Users/henriqueguazzelli/Dev/Python/auto_fleet_control/cupons_xml")
+# nfe_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/notas_xml")
+nfe_folder = Path("/Users/henriqueguazzelli/Dev/Python/auto_fleet_control/notas_xml")
 
 def setup_logging():
     """Configure logging for the application."""
@@ -28,6 +32,21 @@ def extract(sheet_url, cfe_folder, nfe_folder):
     df_nfe = extract_all_nfe(nfe_folder)
     return pd.concat([df, df_cfe, df_nfe], ignore_index=True)
 
+def transform(df: pd.DataFrame) -> pd.DataFrame:
+
+    placa_motorista: Dict[str : str] = {
+    "FED9247": "Luiz",
+    "GBX2G51": "Mylena",
+    "SVD6D88": "Carlos",
+    "EPI6184": "Caminhão Baú",
+    "BWK2969": "Caminhaão Granel"
+}
+
+    df_transformed: pd.DataFrame = df.copy()
+    df_transformed['Motorista'] = df_transformed['Placa'].map(placa_motorista).fillna('')
+    
+    return df_transformed
+
 def load_data_to_csv(target_file, df):
     df.to_csv(target_file, index=False)
 
@@ -36,13 +55,16 @@ def main():
     setup_logging()
     logging.info("Application started.")
     logging.info("Extracting data...")
-    df = extract(sheet_url, cfe_fodler, nfe_folder)
+    df = extract(sheet_url, cfe_folder, nfe_folder)
     logging.info("Data extracted.")
+    logging.info("Transforming data...")
+    df = transform(df)
+    logging.info("Data transformed.")
     logging.info("Loading data to CSV file...")
     load_data_to_csv(target_file, df)
     logging.info("Data loaded to CSV file.")
-    logging.info("Loading data to Google Sheets file...")
-    load_data_to_google_sheets(sheet_url, df)
+    # logging.info("Loading data to Google Sheets file...")
+    # load_data_to_google_sheets(sheet_url, df)
     logging.info("Application finished.")
 
 
