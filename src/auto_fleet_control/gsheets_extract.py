@@ -15,5 +15,6 @@ def extract_from_google_sheets(sheet_url):
         print("DataFrame created successfully:")
     except Exception as e:
         print(f"An error occurred: {e}")
-        print("Please ensure the Google Sheet is publicly accessible.")
+        print("Ensure the Google Sheet is publicly accessible.")
+        print("Also ensure the Google Sheet API is active for your Google Cloud Project.")
     return df

@@ -1,6 +1,6 @@
-from extract_from_sheets import extract_from_google_sheets
-from cfe_improved_v2 import extract_all_cfe
-from nfe_improved_v2 import extract_all_nfe
+from auto_fleet_control.gsheets_extract import extract_from_google_sheets
+from auto_fleet_control.cfe_extract import extract_all_cfe
+from auto_fleet_control.nfe_extract import extract_all_nfe
 from load import load_data_to_google_sheets
 import logging
 import pandas as pd
@@ -25,7 +25,7 @@ def setup_logging():
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
-def extract(sheet_url, cfe_folder, nfe_folder):
+def extract(sheet_url: str, cfe_folder: str, nfe_folder: str) -> pd.DataFrame:
     """Extract data from Google Sheets and XML files."""
     df = extract_from_google_sheets(sheet_url)
     df_cfe = extract_all_cfe(cfe_folder)
@@ -47,7 +47,7 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
     
     return df_transformed
 
-def load_data_to_csv(target_file, df):
+def load_data_to_csv(target_file: Path, df: pd.DataFrame):
     df.to_csv(target_file, index=False)
 
 def main():

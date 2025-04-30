@@ -104,8 +104,10 @@ def extract_all_nfe(xml_folder: Path) -> pd.DataFrame:
 
     return pd.concat(data_frames, ignore_index=True) if data_frames else pd.DataFrame()
 
-def load_data(target_file, df):
+
+def load_to_csv(target_file, df):
     df.to_csv(target_file, index=False)
+
 
 def main():
     setup_logging()
@@ -113,7 +115,7 @@ def main():
     df = extract_all_nfe(xml_folder)
     logging.info(f"Extração concluída. Total de registros: {len(df)}")
     logging.info("Salvando dados em CSV...")
-    load_data(target_file, df)
+    load_to_csv(target_file, df)
     logging.info(f"Finalizado com sucesso. Arquivo salvo como: {target_file}")
 
 if __name__ == "__main__":
