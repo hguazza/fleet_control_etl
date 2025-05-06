@@ -1,6 +1,6 @@
-from auto_fleet_control.gsheets_extract import extract_from_google_sheets
-from auto_fleet_control.cfe_extract import extract_all_cfe
-from auto_fleet_control.nfe_extract import extract_all_nfe
+from gsheets_extract import extract_from_google_sheets
+from cfe_extract import extract_all_cfe
+from nfe_extract import extract_all_nfe
 from load import load_data_to_google_sheets
 import logging
 import pandas as pd
@@ -63,8 +63,8 @@ def main():
     logging.info("Loading data to CSV file...")
     load_data_to_csv(target_file, df)
     logging.info("Data loaded to CSV file.")
-    # logging.info("Loading data to Google Sheets file...")
-    # load_data_to_google_sheets(sheet_url, df)
+    logging.info("Loading data to Google Sheets file...")
+    load_data_to_google_sheets(sheet_url, df)
     logging.info("Application finished.")
 
 

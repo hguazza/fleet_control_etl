@@ -13,7 +13,7 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
     "BWK2969": "Caminhaão Granel"
 }
 
-    df_transformed: pd.DataFrame = df.copy()
+    df_transformed = df.copy()
     df_transformed['Motorista'] = df_transformed['Placa'].map(placa_motorista).fillna('')
     
     return df_transformed
