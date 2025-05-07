@@ -8,7 +8,8 @@ import os
 load_dotenv
 
 # Path to your Google Sheets API credentials JSON file
-credentials_path = os.getenv("google_sheet_credentials_file")
+# credentials_path = os.getenv("google_sheet_credentials_file")
+credentials_path = "key-file.json"
 
 # Define the scope for Google Sheets API
 SCOPE = [

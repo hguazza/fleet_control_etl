@@ -64,6 +64,7 @@ def main():
     load_data_to_csv(target_file, df)
     logging.info("Data loaded to CSV file.")
     logging.info("Loading data to Google Sheets file...")
+    df = df.fillna('')
     load_data_to_google_sheets(sheet_url, df)
     logging.info("Application finished.")
 
