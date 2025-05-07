@@ -36,7 +36,7 @@ def download_nfe_xml_from_drive(folder_id: str, credentials_file: str) -> list:
             print(f"No XML files found in folder with ID: {folder_id}")
             return xml_data_list
 
-        print(f"Found {len(items)} XML files in the folder.")
+        print(f"Found {len(items)} NFe XML files in the folder.")
         for item in items:
             file_id = item['id']
             file_name = item['name']
@@ -54,7 +54,7 @@ def download_nfe_xml_from_drive(folder_id: str, credentials_file: str) -> list:
                 # Parse the XML content
                 root = ET.fromstring(xml_content)
                 xml_data_list.append(root)
-                print(f"Successfully downloaded and parsed: {file_name}")
+                print(f"Successfully downloaded NFe: {file_name}")
 
             except HttpError as error:
                 print(f"An error occurred while downloading or parsing {file_name}: {error}")
@@ -67,25 +67,6 @@ def download_nfe_xml_from_drive(folder_id: str, credentials_file: str) -> list:
         print(f"An error occurred: {e}")
         return []
     
-
-def debug_list_files(folder_id: str, credentials_file: str):
-    """Lists all files and their MIME types in the specified Google Drive folder."""
-    try:
-        creds = Credentials.from_service_account_file(credentials_file,
-                                                     scopes=['https://www.googleapis.com/auth/drive.readonly'])
-        service = build('drive', 'v3', credentials=creds)
-        results = service.files().list(
-            q=f"'{folder_id}' in parents",
-            fields="files(name, mimeType)").execute()
-        items = results.get('files', [])
-        if not items:
-            print(f"No files found in folder with ID: {folder_id}")
-            return
-        print(f"Files in folder '{folder_id}':")
-        for item in items:
-            print(f"- Name: {item['name']}, MIME Type: {item.get('mimeType')}")
-    except Exception as e:
-        print(f"An error occurred: {e}")
 
 if __name__ == '__main__':
     # Replace with your actual folder ID and credentials file path
@@ -104,4 +85,3 @@ if __name__ == '__main__':
             print("\nExample: Root tag of the first XML file:", xml_roots[0].tag)
     else:
         print("\nNo XML data was downloaded.")
-    # debug_list_files(YOUR_DRIVE_FOLDER_ID, YOUR_CREDENTIALS_FILE)    

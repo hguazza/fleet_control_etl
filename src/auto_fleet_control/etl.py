@@ -2,6 +2,8 @@ from gsheets_extract import extract_from_google_sheets
 from cfe_extract import extract_all_cfe
 from nfe_extract import extract_all_nfe
 from load import load_data_to_google_sheets
+from download_cfes import download_cfe_xml_from_drive
+from cfe_extract_drive import extract_all_cfe_drive
 import logging
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -10,8 +12,8 @@ from pathlib import Path
 from typing import Dict
 
 log_file = "log_file.txt"
-target_file = "final.csv"
-sheet_url = "https://docs.google.com/spreadsheets/d/1HtXXEe58zNsG4I3k7qZLBrHJUlmruJEj9jYNffV6w0c/edit?gid=0#gid=0"
+target_file = "etl.csv"
+sheet_url = "https://docs.google.com/spreadsheets/d/1HtXXEe58zNsG4I3k7qZLBrHJUlmruJEj9jYNffV6w0c/edit?gid=0#gid=0" # to load data
 
 # cfe_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/cupons_xml")
 cfe_folder = Path("/Users/henriqueguazzelli/Dev/Python/auto_fleet_control/cupons_xml")
@@ -55,17 +57,17 @@ def main():
     setup_logging()
     logging.info("Application started.")
     logging.info("Extracting data...")
-    df = extract(sheet_url, cfe_folder, nfe_folder)
-    logging.info("Data extracted.")
-    logging.info("Transforming data...")
-    df = transform(df)
-    logging.info("Data transformed.")
-    logging.info("Loading data to CSV file...")
-    load_data_to_csv(target_file, df)
-    logging.info("Data loaded to CSV file.")
-    logging.info("Loading data to Google Sheets file...")
-    df = df.fillna('')
-    load_data_to_google_sheets(sheet_url, df)
+    # df = extract(sheet_url, cfe_folder, nfe_folder)
+    # logging.info("Data extracted.")
+    # logging.info("Transforming data...")
+    # df = transform(df)
+    # logging.info("Data transformed.")
+    # logging.info("Loading data to CSV file...")
+    # load_data_to_csv(target_file, df)
+    # logging.info("Data loaded to CSV file.")
+    # logging.info("Loading data to Google Sheets file...")
+    # df = df.fillna('')
+    # load_data_to_google_sheets(sheet_url, df)
     logging.info("Application finished.")
 
 

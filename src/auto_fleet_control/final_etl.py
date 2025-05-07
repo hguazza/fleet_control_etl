@@ -1,0 +1,78 @@
+from load import load_data_to_google_sheets
+from download_cfes import download_cfe_xml_from_drive
+from download_nfes import download_nfe_xml_from_drive
+from cfe_extract_drive import extract_all_cfe_drive
+from nfe_extract_drive import extract_all_nfe_drive
+import logging
+import pandas as pd
+import xml.etree.ElementTree as ET
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List
+
+log_file = "log_file.txt"
+target_file = "final_etl.csv"
+cfe_sheet_url = "https://docs.google.com/spreadsheets/d/1HtXXEe58zNsG4I3k7qZLBrHJUlmruJEj9jYNffV6w0c/edit?gid=0#gid=0"
+
+CFE_DRIVE_FOLDER_ID = '1v74MOjBS7bnzWO9gsIaOqOBrL1zm4JEU'
+NFE_DRIVE_FOLDER_ID = '10r9kUG398ZidynY9MUFcj6oTnUMbJEWB'
+
+CREDENTIALS_FILE = 'key-file.json'
+
+def setup_logging():
+    """Configure logging for the application."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+
+def download_xml_from_drive():
+    cfe_xml_list = download_cfe_xml_from_drive(CFE_DRIVE_FOLDER_ID, CREDENTIALS_FILE)
+    nfe_xml_list = download_nfe_xml_from_drive(NFE_DRIVE_FOLDER_ID, CREDENTIALS_FILE)
+    return cfe_xml_list, nfe_xml_list
+
+def extract(cfe_xml_list: List[ET.Element], nfe_xml_list: List[ET.Element]) -> pd.DataFrame:
+    """Extract data from Google Sheets and XML files."""
+    df_cfe = extract_all_cfe_drive(cfe_xml_list)
+    df_nfe = extract_all_nfe_drive(nfe_xml_list)
+    return pd.concat([df_cfe, df_nfe], ignore_index=True)
+
+def transform(df: pd.DataFrame) -> pd.DataFrame:
+
+    placa_motorista: Dict[str : str] = {
+    "FED9247": "Luiz",
+    "GBX2G51": "Mylena",
+    "SVD6D88": "Carlos",
+    "EPI6184": "Caminhão Baú",
+    "BWK2969": "Caminhaão Granel"
+}
+
+    df_transformed: pd.DataFrame = df.copy()
+    df_transformed['Motorista'] = df_transformed['Placa'].map(placa_motorista).fillna('')
+    
+    return df_transformed
+
+def load_data_to_csv(target_file: Path, df: pd.DataFrame):
+    df.to_csv(target_file, index=False)
+
+def main():
+    """Main entry point for the application."""
+    setup_logging()
+    logging.info("Application started.")
+    logging.info("Downloading XML files from Google Drive...")
+    cfe_xml_list, nfe_xml_list = download_xml_from_drive()
+    logging.info("XML files downloaded.")
+    logging.info("Extracting data from XML files...")
+    df = extract(cfe_xml_list, nfe_xml_list)
+    logging.info("Data extracted.")
+    logging.info("Transforming data...")
+    df = transform(df)
+    logging.info("Data transformed.")
+    logging.info("Loading data to CSV file...")
+    load_data_to_csv(target_file, df)
+    logging.info("Data loaded to CSV file.")
+    logging.info("Application finished.")
+
+
+if __name__ == "__main__":
+    main()
