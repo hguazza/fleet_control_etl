@@ -9,26 +9,24 @@ import pandas as pd
 from datetime import datetime
 
 # --- Configuration ---
+target_file = "cfe.csv"
 # Replace with the ID of your Google Drive folder
-DRIVE_FOLDER_ID = '1v74MOjBS7bnzWO9gsIaOqOBrL1zm4JEU'  
+DRIVE_FOLDER_ID = '1v74MOjBS7bnzWO9gsIaOqOBrL1zm4JEU'
 
 # Path to your service account key JSON file
 SERVICE_ACCOUNT_KEY_PATH = 'key-file.json' 
 
 # Define the scopes needed for Google Drive access
-SCOPES = ['https://www.googleapis.com/auth/drive.readonly',
-          'https://www.googleapis.com/auth/spreadsheets']
+SCOPES = ['https://www.googleapis.com/auth/drive']
 
 today = datetime.now().strftime("%d/%m/%Y")
 
-def get_xml_data_from_drive() -> list:
+def get_xml_data_from_drive():
     """
     Extracts data directly from XML files within a specified Google Drive folder.
 
     Returns:
-        list: A list where each element is the parsed XML content
-              (using ElementTree in this example). You can modify the
-              parsing logic as needed.
+        pd.DataFrame: A pandas DataFrame where each element is the parsed XML content
     """
     creds = None
     extracted_data = []
@@ -38,7 +36,7 @@ def get_xml_data_from_drive() -> list:
 
         service = build('drive', 'v3', credentials=creds)
         results = service.files().list(
-            q=f"'{DRIVE_FOLDER_ID}' in parents and mimeType='application/xml'",
+            q=f"'{DRIVE_FOLDER_ID}' in parents and (mimeType='application/xml' or mimeType='text/xml')",
             fields="nextPageToken, files(id, name)").execute()
         items = results.get('files', [])
 
@@ -58,13 +56,12 @@ def get_xml_data_from_drive() -> list:
                 done = False
                 while not done:
                     status, done = downloader.next_chunk()
-                    print(f'Download progress for {file_name}: {int(status.progress() * 100)}%.', end='\r')
+                    # print(f'Download progress for {file_name}: {int(status.progress() * 100)}%.', end='\r')
                 print() # New line after download completion
                 xml_content = fh.getvalue()
 
-                # --- Your XML parsing logic here ---
                 try:
-                    tree = ET.parse(xml_content)
+                    tree = ET.ElementTree(ET.fromstring(xml_content))
                     root = tree.getroot()
                 except (ET.ParseError, FileNotFoundError) as e:
                     raise ValueError(f"Failed to parse XML file {xml_content}: {e}")
@@ -109,32 +106,39 @@ def get_xml_data_from_drive() -> list:
                             "Histórico": "",
                             "Categoria": ""
                         })
+                extracted_data.extend(rows)
 
-                return pd.DataFrame(rows)
-
+            except googleapiclient.errors.HttpError as error:
+                print(f'An error occurred while downloading {file_name}: {error}')
+                continue
             except HttpError as error:
                 print(f'An error occurred while processing {file_name}: {error}')
                 continue
-
-        return extracted_data
+            
+        print(f"Successfully processed {len(items)} XML files from Google Drive.")     
 
     except Exception as e:
         print(f"An error occurred during Google Drive interaction: {e}")
-        return extracted_data
 
-# --- Example of how to use the function ---
+        return pd.DataFrame(extracted_data)
+
+
+def load_data(target_file, df):
+    df.to_csv(target_file, index=False)
+
+
 if __name__ == '__main__':
-    drive_folder_link = "YOUR_GOOGLE_DRIVE_FOLDER_LINK" # Reminder to get the Folder ID
-    # Extract the folder ID (replace with your actual logic or just the ID string)
-
+    
     xml_data = get_xml_data_from_drive()
-    if xml_data:
-        print("\nSuccessfully retrieved and (partially) processed XML data from Google Drive.")
-        # Now you can iterate through 'xml_data' and extract the specific
-        # information you need to update your Google Sheet.
-        # For example:
-        # for root in xml_data:
-        #     # Extract data using root.findall('.//some_tag') etc.
-        #     pass
-    else:
-        print("\nNo XML data retrieved from Google Drive.")
+    load_data(target_file, xml_data)
+    # if xml_data:
+    #     print("\nSuccessfully retrieved and (partially) processed XML data from Google Drive.")      
+    #     load_data(target_file, xml_data)
+    #     # Now you can iterate through 'xml_data' and extract the specific
+    #     # information you need to update your Google Sheet.
+    #     # For example:
+    #     # for root in xml_data:
+    #     #     # Extract data using root.findall('.//some_tag') etc.
+    #     #     pass
+    # else:
+    #     print("\nNo XML data retrieved from Google Drive.")
