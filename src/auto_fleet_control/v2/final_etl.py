@@ -1,8 +1,8 @@
-from load import load_data_to_google_sheets
-from download_cfes import download_cfe_xml_from_drive
-from download_nfes import download_nfe_xml_from_drive
-from cfe_extract_drive import extract_all_cfe_drive
-from nfe_extract_drive import extract_all_nfe_drive
+from auto_fleet_control.v1.load import load_data_to_google_sheets
+from auto_fleet_control.v2.download_cfes import download_cfe_xml_from_drive
+from auto_fleet_control.v2.download_nfes import download_nfe_xml_from_drive
+from auto_fleet_control.v2.cfe_extract_drive import extract_all_cfe_drive
+from auto_fleet_control.v2.nfe_extract_drive import extract_all_nfe_drive
 import logging
 import pandas as pd
 import xml.etree.ElementTree as ET

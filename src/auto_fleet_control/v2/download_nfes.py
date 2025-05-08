@@ -66,8 +66,8 @@ def download_nfe_xml_from_drive(folder_id: str, credentials_file: str) -> list:
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
-    
 
+    
 if __name__ == '__main__':
     # Replace with your actual folder ID and credentials file path
     YOUR_DRIVE_FOLDER_ID = '10r9kUG398ZidynY9MUFcj6oTnUMbJEWB'

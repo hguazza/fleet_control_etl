@@ -59,7 +59,7 @@ def extract_from_nfe(root: ET.Element) -> pd.DataFrame:
             qtde = qtde_elem.text if qtde_elem is not None else None
 
             discount_elem = prod.find("nfe:vDesc", ns)
-            discount = discount_elem.text if discount_elem is not None else None
+            discount = discount_elem.text if discount_elem is not None else 0
             
             valor = (float(vProd) - float(discount)) * float(qtde)
             
@@ -91,7 +91,7 @@ def extract_all_nfe_drive(xml_list: List[ET.Element]) -> pd.DataFrame:
             data = extract_from_nfe(file)
             data_frames.append(data)
         except Exception as e:
-            logging.error(f"Failed to process {file}: {e}")
+            logging.error(f"Failed to process {file}: {e}, {"extract_all_nfe_drive"}")
 
     return pd.concat(data_frames, ignore_index=True) if data_frames else pd.DataFrame()
 
