@@ -12,7 +12,8 @@ from typing import Dict
 log_file = "log_file.txt"
 target_file = "etl.csv"
 sheet_url = "https://docs.google.com/spreadsheets/d/1HtXXEe58zNsG4I3k7qZLBrHJUlmruJEj9jYNffV6w0c/edit?gid=0#gid=0" # to load data
-spreadsheet_id = "1e52CP_4yYu-KUydur9RLqrDrXhTVIEEfTThn1A8E6iU"
+
+spreadsheet_key = "1crLyYcSAJLBBndty6ssJWcaj1MFhYxjDTelslziXIyI"
 
 # credentials_path = os.getenv("google_sheet_credentials_file")
 credentials_path = "key-file.json"
@@ -36,7 +37,7 @@ def setup_logging():
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
-def extract(sheet_url: str, cfe_folder: str, nfe_folder: str) -> pd.DataFrame:
+def extract(cfe_folder: str, nfe_folder: str) -> pd.DataFrame:
     """Extract data from Google Sheets and XML files."""
     # df = extract_from_google_sheets(sheet_url)
     df_cfe = extract_all_cfe(cfe_folder)
@@ -66,7 +67,7 @@ def main():
     setup_logging()
     logging.info("Application started.")
     logging.info("Extracting data...")
-    df = extract(sheet_url, cfe_folder, nfe_folder)
+    df = extract(cfe_folder, nfe_folder)
     logging.info("Data extracted.")
     logging.info("Transforming data...")
     df = transform(df)
@@ -76,7 +77,7 @@ def main():
     logging.info("Data loaded to CSV file.")
     logging.info("Loading data to Google Sheets file...")
     df = df.fillna('')
-    load_data_to_google_sheets(sheet_url, df)
+    load_data_to_google_sheets(spreadsheet_key, df)
     logging.info("Application finished.")
 
 

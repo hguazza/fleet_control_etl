@@ -59,8 +59,8 @@ def extract_from_cfe(root: ET.Element) -> pd.DataFrame:
                 "Historico": "",
                 "Categoria": "",
                 "Placa": placa,
+                "Veiculo": "",
                 "KM": km,
-                "Fornecedor": fornecedor,
                 "Motorista": "",
             })
 

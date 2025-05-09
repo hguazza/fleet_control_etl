@@ -67,9 +67,9 @@ def extract_from_nfe(xml_path: str) -> pd.DataFrame:
             qtde = qtde_elem.text if qtde_elem is not None else None
 
             discount_elem = prod.find("nfe:vDesc", ns)
-            discount = discount_elem.text if discount_elem is not None else None
+            discount = discount_elem.text if discount_elem is not None else 0
             
-            valor = (float(vProd) - float(discount)) * float(qtde)
+            # valor = (float(vProd) - float(discount)) * float(qtde)
             
             rows.append({
                 "Data": date,
@@ -79,11 +79,11 @@ def extract_from_nfe(xml_path: str) -> pd.DataFrame:
                 "Descricao": xProd,
                 "Fornecedor": fornecedor,
                 "Historico": "",
-                "Categoria": "NFE",
+                "Categoria": "",
                 "Placa": placa,          
                 "Veiculo": "",  
                 "KM": km, 
-                "Motorista": "",
+                "Motorista": ""
             })
 
     return pd.DataFrame(rows)

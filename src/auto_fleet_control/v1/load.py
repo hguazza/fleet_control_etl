@@ -18,7 +18,7 @@ SCOPE = [
     'https://www.googleapis.com/auth/drive'
 ]
 
-def load_data_to_google_sheets(sheet_url, transformed_data):
+def load_data_to_google_sheets(spreadsheet_key, transformed_data):
     """Upload transformed data to Google Sheets."""
     try:
         # Authenticate with Google Sheets API
@@ -26,7 +26,7 @@ def load_data_to_google_sheets(sheet_url, transformed_data):
         gc = gspread.authorize(creds)
 
         # Extract the spreadsheet key from the URL
-        spreadsheet_key = sheet_url.split('/d/')[1].split('/')[0]
+        # spreadsheet_key = sheet_url.split('/d/')[1].split('/')[0]
 
         # Open the Google Sheet by its key
         spreadsheet = gc.open_by_key(spreadsheet_key)
@@ -40,7 +40,7 @@ def load_data_to_google_sheets(sheet_url, transformed_data):
         # Upload the DataFrame to the worksheet, including headers
         worksheet.update([transformed_data.columns.values.tolist()] + transformed_data.values.tolist())
 
-        logging.info(f"Data successfully uploaded to Google Sheet: {sheet_url}")
+        logging.info(f"Data successfully uploaded to Google Sheet: {spreadsheet.title}")
 
     except Exception as e:
         logging.error(f"An error occurred during data loading to Google Sheets: {e}")

@@ -71,7 +71,7 @@ def extract_from_nfe(root: ET.Element) -> pd.DataFrame:
                 "Descricao": xProd,
                 "Fornecedor": fornecedor,
                 "Historico": "",
-                "Categoria": "NFE",
+                "Categoria": "",
                 "Placa": placa,          
                 "Veiculo": "",  
                 "KM": km, 
