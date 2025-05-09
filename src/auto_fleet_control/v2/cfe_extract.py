@@ -52,14 +52,16 @@ def extract_from_cfe(root: ET.Element) -> pd.DataFrame:
             rows.append({
                 "Data": today,
                 "Numero": nCFe,
+                "Tipo": "CFe",
                 "Valor": vProd,
                 "Descricao": xProd,
+                "Fornecedor": fornecedor,
+                "Historico": "",
+                "Categoria": "",
                 "Placa": placa,
                 "KM": km,
                 "Fornecedor": fornecedor,
                 "Motorista": "",
-                "Histórico": "",
-                "Categoria": "CFE"
             })
 
     return pd.DataFrame(rows)

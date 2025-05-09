@@ -12,6 +12,17 @@ from typing import Dict
 log_file = "log_file.txt"
 target_file = "etl.csv"
 sheet_url = "https://docs.google.com/spreadsheets/d/1HtXXEe58zNsG4I3k7qZLBrHJUlmruJEj9jYNffV6w0c/edit?gid=0#gid=0" # to load data
+spreadsheet_id = "1e52CP_4yYu-KUydur9RLqrDrXhTVIEEfTThn1A8E6iU"
+
+# credentials_path = os.getenv("google_sheet_credentials_file")
+credentials_path = "key-file.json"
+
+# Define the scope for Google Sheets API
+SCOPE = [
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive'
+]
 
 # cfe_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/cupons_xml")
 cfe_folder = Path("/Users/henriqueguazzelli/Dev/Python/auto_fleet_control/cupons_xml")
@@ -30,7 +41,7 @@ def extract(sheet_url: str, cfe_folder: str, nfe_folder: str) -> pd.DataFrame:
     # df = extract_from_google_sheets(sheet_url)
     df_cfe = extract_all_cfe(cfe_folder)
     df_nfe = extract_all_nfe(nfe_folder)
-    return pd.concat([df, df_cfe, df_nfe], ignore_index=True)
+    return pd.concat([df_cfe, df_nfe], ignore_index=True)
 
 def transform(df: pd.DataFrame) -> pd.DataFrame:
 
@@ -63,9 +74,9 @@ def main():
     logging.info("Loading data to CSV file...")
     load_data_to_csv(target_file, df)
     logging.info("Data loaded to CSV file.")
-    # logging.info("Loading data to Google Sheets file...")
-    # df = df.fillna('')
-    # load_data_to_google_sheets(sheet_url, df)
+    logging.info("Loading data to Google Sheets file...")
+    df = df.fillna('')
+    load_data_to_google_sheets(sheet_url, df)
     logging.info("Application finished.")
 
 

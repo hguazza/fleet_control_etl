@@ -59,14 +59,16 @@ def extract_from_cfe(xml_path: str) -> pd.DataFrame:
             rows.append({
                 "Data": today,
                 "Numero": nCFe,
+                "Tipo": "NFe",
                 "Valor": vProd,
                 "Descricao": xProd,
+                "Fornecedor": fornecedor,
+                "Historico": "",
+                "Categoria": "",
                 "Placa": placa,
                 "KM": km,
                 "Fornecedor": fornecedor,
                 "Motorista": "",
-                "Histórico": "",
-                "Categoria": ""
             })
 
     return pd.DataFrame(rows)

@@ -74,14 +74,16 @@ def extract_from_nfe(xml_path: str) -> pd.DataFrame:
             rows.append({
                 "Data": date,
                 "Numero": nNF,
-                "Valor": valor,
+                "Tipo": "NFe",
+                "Valor": vProd,
                 "Descricao": xProd,
-                "Placa": placa,
-                "KM": km,
                 "Fornecedor": fornecedor,
+                "Historico": "",
+                "Categoria": "NFE",
+                "Placa": placa,          
+                "Veiculo": "",  
+                "KM": km, 
                 "Motorista": "",
-                "Histórico": "",
-                "Categoria": ""
             })
 
     return pd.DataFrame(rows)

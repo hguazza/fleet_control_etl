@@ -66,14 +66,16 @@ def extract_from_nfe(root: ET.Element) -> pd.DataFrame:
             rows.append({
                 "Data": date,
                 "Numero": nNF,
+                "Tipo": "NFe",
                 "Valor": vProd,
                 "Descricao": xProd,
-                "Placa": placa,
-                "KM": km,
                 "Fornecedor": fornecedor,
+                "Historico": "",
+                "Categoria": "NFE",
+                "Placa": placa,          
+                "Veiculo": "",  
+                "KM": km, 
                 "Motorista": "",
-                "Histórico": "",
-                "Categoria": "NFE"
             })
 
     return pd.DataFrame(rows)
