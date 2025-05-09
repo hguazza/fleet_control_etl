@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List
 import pandas as pd
 from auto_fleet_control.v2.download_nfes import download_nfe_xml_from_drive
-from auto_fleet_control.v2.nfe_extract_drive import extract_all_nfe_drive
+from auto_fleet_control.v2.nfe_extract import extract_all_nfe_drive
 import xml.etree.ElementTree as ET
 
 target_file = "nfe.csv"

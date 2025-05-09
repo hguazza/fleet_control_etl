@@ -1,8 +1,9 @@
-from auto_fleet_control.v1.load import load_data_to_google_sheets
-from auto_fleet_control.v2.download_cfes import download_cfe_xml_from_drive
-from auto_fleet_control.v2.download_nfes import download_nfe_xml_from_drive
-from auto_fleet_control.v2.cfe_extract_drive import extract_all_cfe_drive
-from auto_fleet_control.v2.nfe_extract_drive import extract_all_nfe_drive
+from download_cfes import download_cfe_xml_from_drive
+from download_nfes import download_nfe_xml_from_drive
+from cfe_extract import extract_all_cfe_drive
+from nfe_extract import extract_all_nfe_drive
+from load import load_data_to_google_sheets
+from load import load_data_to_csv
 import logging
 import pandas as pd
 import xml.etree.ElementTree as ET
@@ -12,12 +13,19 @@ from typing import Dict, List
 
 log_file = "log_file.txt"
 target_file = "final_etl.csv"
-cfe_sheet_url = "https://docs.google.com/spreadsheets/d/1HtXXEe58zNsG4I3k7qZLBrHJUlmruJEj9jYNffV6w0c/edit?gid=0#gid=0"
+sheet_url = "https://docs.google.com/spreadsheets/d/1crLyYcSAJLBBndty6ssJWcaj1MFhYxjDTelslziXIyI/edit?gid=0#gid=0"
 
 CFE_DRIVE_FOLDER_ID = '1v74MOjBS7bnzWO9gsIaOqOBrL1zm4JEU'
+test_cfe_folder_id = '12SbHsVwabhvDaDiC5UQ19X6TBrrxOpz_'
 NFE_DRIVE_FOLDER_ID = '10r9kUG398ZidynY9MUFcj6oTnUMbJEWB'
-
+test_nfe_folder_id = '1K7wJvEMO1_MDaf4FGxYwEwkCBrtrFwMn'
 CREDENTIALS_FILE = 'key-file.json'
+
+SCOPE = [
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/drive.file',
+    'https://www.googleapis.com/auth/drive'
+]
 
 def setup_logging():
     """Configure logging for the application."""
@@ -49,11 +57,10 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
 
     df_transformed: pd.DataFrame = df.copy()
     df_transformed['Motorista'] = df_transformed['Placa'].map(placa_motorista).fillna('')
+    df_transformed = df_transformed.drop(df_transformed[(df_transformed['Fornecedor'] == 'BIZUNGA') & (df_transformed['Categoria'] == 'NFE')].index)
     
     return df_transformed
 
-def load_data_to_csv(target_file: Path, df: pd.DataFrame):
-    df.to_csv(target_file, index=False)
 
 def main():
     """Main entry point for the application."""
@@ -71,6 +78,9 @@ def main():
     logging.info("Loading data to CSV file...")
     load_data_to_csv(target_file, df)
     logging.info("Data loaded to CSV file.")
+    logging.info("Loading data to Google Sheets file...")
+    load_data_to_google_sheets(sheet_url, df)
+    logging.info("Data loaded to Google Sheets file.")
     logging.info("Application finished.")
 
 

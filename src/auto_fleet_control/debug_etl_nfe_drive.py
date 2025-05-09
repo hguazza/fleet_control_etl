@@ -1,6 +1,6 @@
 import io
-from download_nfes import download_nfe_xml_from_drive
-from nfe_extract_drive import extract_all_nfe_drive
+from auto_fleet_control.v2.download_nfes import download_nfe_xml_from_drive
+from auto_fleet_control.v2.nfe_extract import extract_all_nfe_drive
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError

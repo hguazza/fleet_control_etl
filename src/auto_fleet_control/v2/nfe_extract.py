@@ -53,7 +53,7 @@ def extract_from_nfe(root: ET.Element) -> pd.DataFrame:
             xProd = xProd_elem.text if xProd_elem is not None else None
 
             vProd_elem = prod.find("nfe:vProd", ns)
-            vProd = vProd_elem.text if vProd_elem is not None else None
+            vProd = vProd_elem.text if vProd_elem is not None else 0
 
             qtde_elem = prod.find("nfe:qCom", ns)
             qtde = qtde_elem.text if qtde_elem is not None else None
@@ -61,12 +61,12 @@ def extract_from_nfe(root: ET.Element) -> pd.DataFrame:
             discount_elem = prod.find("nfe:vDesc", ns)
             discount = discount_elem.text if discount_elem is not None else 0
             
-            valor = (float(vProd) - float(discount)) * float(qtde)
+            # valor = (float(vProd) - float(discount)) * float(qtde)
             
             rows.append({
                 "Data": date,
                 "Numero": nNF,
-                "Valor": valor,
+                "Valor": vProd,
                 "Descricao": xProd,
                 "Placa": placa,
                 "KM": km,
@@ -91,7 +91,7 @@ def extract_all_nfe_drive(xml_list: List[ET.Element]) -> pd.DataFrame:
             data = extract_from_nfe(file)
             data_frames.append(data)
         except Exception as e:
-            logging.error(f"Failed to process {file}: {e}, {"extract_all_nfe_drive"}")
+            logging.error(f"Failed to process {file}: {e}")
 
     return pd.concat(data_frames, ignore_index=True) if data_frames else pd.DataFrame()
 
