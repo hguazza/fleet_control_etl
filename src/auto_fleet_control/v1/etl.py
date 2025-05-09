@@ -1,4 +1,4 @@
-# from gsheets_extract import extract_from_google_sheets
+from gsheets_extract import extract_from_google_sheets
 from cfe_extract import extract_all_cfe
 from nfe_extract import extract_all_nfe
 from load import load_data_to_google_sheets
@@ -27,7 +27,7 @@ def setup_logging():
 
 def extract(sheet_url: str, cfe_folder: str, nfe_folder: str) -> pd.DataFrame:
     """Extract data from Google Sheets and XML files."""
-    df = extract_from_google_sheets(sheet_url)
+    # df = extract_from_google_sheets(sheet_url)
     df_cfe = extract_all_cfe(cfe_folder)
     df_nfe = extract_all_nfe(nfe_folder)
     return pd.concat([df, df_cfe, df_nfe], ignore_index=True)
