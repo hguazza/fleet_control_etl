@@ -56,6 +56,8 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
 
     df_transformed: pd.DataFrame = df.copy()
     df_transformed['Motorista'] = df_transformed['Placa'].map(placa_motorista).fillna('')
+    df_transformed = df_transformed.drop(df_transformed[df_transformed['Fornecedor'].str.contains('BIZUNGA', na=False) & (df_transformed['Tipo'] == 'NFe')].index
+)
     
     return df_transformed
 
@@ -70,7 +72,9 @@ def main():
     df = extract(cfe_folder, nfe_folder)
     logging.info("Data extracted.")
     logging.info("Transforming data...")
+    print(df.shape)
     df = transform(df)
+    print(df.shape)
     logging.info("Data transformed.")
     logging.info("Loading data to CSV file...")
     load_data_to_csv(target_file, df)

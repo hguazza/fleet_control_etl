@@ -44,10 +44,10 @@ def extract_from_cfe(root: ET.Element) -> pd.DataFrame:
         if prod_elem is not None:
             xProd = prod_elem.findtext("xProd")
             vProd_text = prod_elem.findtext("vProd")
-            try:
-                vProd = float(vProd_text) if vProd_text else None
-            except ValueError:
-                vProd = None
+            vProd = float(vProd_text) if vProd_text else 0
+            vDesconto_text = prod_elem.findtext("vDesc")
+            vDesconto = float(vDesconto_text) if vDesconto_text else 0
+            vProd -= vDesconto
 
             rows.append({
                 "Data": today,

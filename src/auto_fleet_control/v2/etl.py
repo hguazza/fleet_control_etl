@@ -57,7 +57,9 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
 
     df_transformed: pd.DataFrame = df.copy()
     df_transformed['Motorista'] = df_transformed['Placa'].map(placa_motorista).fillna('')
-    df_transformed = df_transformed.drop(df_transformed[(df_transformed['Fornecedor'] == 'BIZUNGA') & (df_transformed['Categoria'] == 'NFE')].index)
+    df_transformed = df_transformed.drop(df_transformed[df_transformed['Fornecedor'].str.contains('BIZUNGA', na=False) & (df_transformed['Tipo'] == 'NFe')].index
+)
+
     
     return df_transformed
 
@@ -74,6 +76,7 @@ def main():
     logging.info("Data extracted.")
     logging.info("Transforming data...")
     df = transform(df)
+    print(df)
     logging.info("Data transformed.")
     logging.info("Loading data to CSV file...")
     load_data_to_csv(target_file, df)
