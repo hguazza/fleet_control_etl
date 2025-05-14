@@ -8,7 +8,7 @@ from datetime import datetime
 
 
 now = datetime.now()
-today = now.strftime("%d/%m/%Y")
+today = now.strftime("%Y-%m-%d")
 
 log_file = "log_file.txt"
 target_file = "cfe.csv"

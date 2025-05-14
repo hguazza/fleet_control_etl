@@ -31,7 +31,7 @@ def extract_from_nfe(root: ET.Element) -> pd.DataFrame:
     # data = data_elem.text[:10].replace("-", "/") if data_elem is not None else None
     data_text = data_elem.text[:10]
     date = datetime.strptime(data_text, "%Y-%m-%d")
-    date = date.strftime("%d/%m/%Y")
+    # date = date.strftime("%d/%m/%Y")
 
     fornecedor_elem = infNFe.find(".//nfe:emit/nfe:xNome", ns)
     fornecedor = fornecedor_elem.text if fornecedor_elem is not None else None

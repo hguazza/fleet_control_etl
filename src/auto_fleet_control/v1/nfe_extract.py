@@ -12,6 +12,7 @@ target_file = "nfe.csv"
 # xml_folder = Path("C:/Users/Henrique/Dev/Python/auto_fleet_control/notas_xml")
 xml_folder = Path("/Users/henriqueguazzelli/Dev/Python/auto_fleet_control/notas_xml")
 
+
 def setup_logging():
     logging.basicConfig(
         level=logging.INFO,
@@ -39,7 +40,7 @@ def extract_from_nfe(xml_path: str) -> pd.DataFrame:
     # data = data_elem.text[:10].replace("-", "/") if data_elem is not None else None
     data_text = data_elem.text[:10]
     date = datetime.strptime(data_text, "%Y-%m-%d")
-    date = date.strftime("%d/%m/%Y")
+    date = date.strftime("%Y-%m-%d")
 
     fornecedor_elem = infNFe.find(".//nfe:emit/nfe:xNome", ns)
     fornecedor = fornecedor_elem.text if fornecedor_elem is not None else None
