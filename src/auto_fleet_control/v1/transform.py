@@ -11,6 +11,7 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
     "SVD6D88": "Carlos",
     "EPI6184": "Caminhão Baú",
     "BWK2969": "Caminhaão Granel"
+    ""
 }
 
     df_transformed = df.copy()

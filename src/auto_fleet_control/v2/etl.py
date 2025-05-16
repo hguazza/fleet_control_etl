@@ -48,17 +48,40 @@ def extract(cfe_xml_list: List[ET.Element], nfe_xml_list: List[ET.Element]) -> p
 def transform(df: pd.DataFrame) -> pd.DataFrame:
 
     placa_motorista: Dict[str : str] = {
-    "FED9247": "Luiz",
-    "GBX2G51": "Mylena",
-    "SVD6D88": "Carlos",
-    "EPI6184": "Caminhão Baú",
-    "BWK2969": "Caminhaão Granel"
-}
+        "FED9247": "Luiz",
+        "GBX2G51": "Mylena",
+        "SVD6D88": "Carlos",
+        "EPI6184": "Caminhão Baú",
+        "BWK2969": "Caminhaão Granel",
+        "FZO2960": "Lucas",
+    }
+    
+    placa_carro: Dict[str : str] = {
+        "FED9247": "Strada",
+        "GBX2G51": "Strada",
+        "SVD6D88": "FREIGHTLINER",
+        "EPI6184": "Caminhão Baú",
+        "BWK2969": "Caminhaão Granel",
+        "FZO2960": "Montana",
+    }
+
 
     df_transformed: pd.DataFrame = df.copy()
     df_transformed['Motorista'] = df_transformed['Placa'].map(placa_motorista).fillna('')
-    df_transformed = df_transformed.drop(df_transformed[df_transformed['Fornecedor'].str.contains('BIZUNGA', na=False) & (df_transformed['Tipo'] == 'NFe')].index
-)
+    df_transformed = df_transformed.drop(df_transformed[df_transformed['Fornecedor'].str.contains('BIZUNGA', na=False) & (df_transformed['Tipo'] == 'NFe')].index)
+    df_transformed = df_transformed.drop(df_transformed[df_transformed['Fornecedor'].str.contains('CASTELINHO', na=False) & (df_transformed['Tipo'] == 'NFe')].index)
+
+    # Remover linhas que contenham uma placa que não é da Nutri
+    placas_carros = list(placa_carro.keys())
+    df_transformed = df_transformed[df_transformed['Placa'].str.contains('|'.join(placas_carros), na=False)]
+
+
+    # Create a boolean mask for rows containing the target words
+    contains_combustivel = df_transformed["Descricao"].str.contains("GASOLINA|DIESEL|ETANOL|O\.DIE\.", na=False, case=False)
+    # Use the boolean mask to set the 'Historico' column
+    df_transformed.loc[contains_combustivel, "Historico"] = "Combustível"
+    # Use the same boolean mask to set the 'Categoria' column
+    df_transformed.loc[contains_combustivel, "Categoria"] = "Abastecimento"
 
     
     return df_transformed

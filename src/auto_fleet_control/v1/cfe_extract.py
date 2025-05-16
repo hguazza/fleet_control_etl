@@ -29,6 +29,11 @@ def extract_from_cfe(xml_path: str) -> pd.DataFrame:
     except (ET.ParseError, FileNotFoundError) as e:
         raise ValueError(f"Failed to parse XML file {xml_path}: {e}")
 
+    data_elem = root.find(".//infCFe/ide/dEmi")
+    date = data_elem.text if data_elem is not None else None
+    date = pd.to_datetime(date, format="%Y%m%d")
+    date = date.strftime('%Y-%m-%d')
+
     nCFe_elem = root.find(".//infCFe/ide/nCFe")
     nCFe = nCFe_elem.text if nCFe_elem is not None else None
 
@@ -57,7 +62,7 @@ def extract_from_cfe(xml_path: str) -> pd.DataFrame:
             vProd -= vDesconto
 
             rows.append({
-                "Data": today,
+                "Data": date,
                 "Numero": nCFe,
                 "Tipo": "CFe",
                 "Valor": vProd,
